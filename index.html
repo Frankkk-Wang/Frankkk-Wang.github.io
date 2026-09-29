@@ -55,10 +55,18 @@ nav .lk a:hover{color:var(--ink)}
 @media(max-width:620px){nav .lk a.opt{display:none}}
 
 /* ── hero ────────────────────────────────────────── */
-header{padding:96px 0 72px;border-bottom:1px solid var(--rule)}
-.kicker{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:22px}
-h1{font-size:clamp(38px,7vw,68px);line-height:1.02;letter-spacing:-.033em;font-weight:800;margin:0 0 26px;text-wrap:balance}
-.lede{font-size:clamp(18px,2.3vw,21px);line-height:1.55;color:var(--ink-2);max-width:30em;margin:0 0 30px}
+header{padding:74px 0 66px;border-bottom:1px solid var(--rule)}
+.hero{display:grid;grid-template-columns:minmax(0,1fr) 252px;gap:52px;align-items:start}
+@media(max-width:780px){.hero{grid-template-columns:1fr;gap:34px}
+  .portrait{order:-1;max-width:212px}}
+.portrait{margin:0}
+.portrait img{width:100%;height:auto;display:block;border:1px solid var(--rule);filter:saturate(.92)}
+.portrait figcaption{font-family:var(--mono);font-size:11px;color:var(--ink-3);margin-top:10px;line-height:1.55}
+.kicker{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:18px}
+h1{font-size:clamp(34px,5.4vw,52px);line-height:1.04;letter-spacing:-.032em;font-weight:800;margin:0 0 6px;text-wrap:balance}
+.role{font-size:clamp(17px,2.1vw,20px);line-height:1.4;color:var(--det);font-weight:600;letter-spacing:-.01em;margin:0 0 22px}
+.lede{font-size:17.5px;line-height:1.62;color:var(--ink-2);max-width:34em;margin:0 0 15px}
+.lede:last-of-type{margin-bottom:26px}
 .lede b{color:var(--ink);font-weight:600}
 .meta{display:flex;flex-wrap:wrap;gap:8px 10px}
 .meta a,.meta span{font-family:var(--mono);font-size:12.5px;padding:6px 12px;border:1px solid var(--rule);
@@ -109,12 +117,6 @@ ul.clean li::before{content:"";position:absolute;left:0;top:11px;width:7px;heigh
 .card p{font-size:15.5px;margin:0}
 .card .n{font-family:var(--mono);font-size:12.5px;color:var(--det);margin-top:12px;display:block;font-weight:500}
 
-/* ── about ───────────────────────────────────────── */
-.about{display:grid;grid-template-columns:minmax(0,1fr) 260px;gap:40px;align-items:start}
-@media(max-width:700px){.about{grid-template-columns:1fr;gap:28px}}
-.about img{width:100%;height:auto;display:block;border:1px solid var(--rule);filter:saturate(.92)}
-.about figcaption{margin-top:10px}
-
 /* ── footer ──────────────────────────────────────── */
 footer{padding:56px 0 76px;font-family:var(--mono);font-size:12.5px;color:var(--ink-3);line-height:1.9}
 footer a{color:var(--ink-2)}
@@ -129,19 +131,29 @@ footer .row{display:flex;flex-wrap:wrap;gap:8px 22px;margin-bottom:14px}
     <a href="#hef">HEF Navigator</a>
     <a href="#signals" class="opt">ESG signals</a>
     <a href="#work" class="opt">Other work</a>
-    <a href="#about">About</a>
+    <a href="#background">Background</a>
   </span>
 </div></nav>
 
 <header id="top"><div class="col">
-  <div class="kicker">Durham, NC · open to relocation</div>
-  <h1>I build conversational AI that has to survive a real customer.</h1>
-  <p class="lede">Right now that means an assistant for a <b>U.S. Treasury-certified community lender</b>, live in production. The interesting part was never getting it to talk. It was working out <b>whether it was right</b>, and making the parts that must not be wrong stop depending on a model.</p>
-  <div class="meta">
-    <a href="mailto:frankwhn0227@outlook.com">frankwhn0227@outlook.com</a>
-    <a href="https://www.linkedin.com/in/frank-haonian-wang-465636354" target="_blank" rel="noopener">LinkedIn</a>
-    <a href="https://github.com/Frankkk-Wang" target="_blank" rel="noopener">GitHub</a>
-    <span>MS Information Science, UNC</span>
+  <div class="hero">
+    <div>
+      <div class="kicker">Durham, NC · open to relocation</div>
+      <h1>Haonian (Frank) Wang</h1>
+      <p class="role">I build conversational AI that has to survive a real customer.</p>
+      <p class="lede">Right now that means an assistant for a <b>U.S. Treasury-certified community lender</b>, live in production. The interesting part was never getting it to talk. It was working out <b>whether it was right</b>, and making the parts that must not be wrong stop depending on a model.</p>
+      <p class="lede">My background is classical data science — NLP, time-series, experiment design, the statistics of deciding whether a result is real. This year I have been on the problem sitting next to it: an LLM system can be confidently wrong in ways a regression never is, and most of the work is the scaffolding that catches it before a customer does.</p>
+      <div class="meta">
+        <a href="mailto:frankwhn0227@outlook.com">frankwhn0227@outlook.com</a>
+        <a href="https://www.linkedin.com/in/frank-haonian-wang-465636354" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="https://github.com/Frankkk-Wang" target="_blank" rel="noopener">GitHub</a>
+        <span>MS Information Science, UNC 2026</span>
+      </div>
+    </div>
+    <figure class="portrait">
+      <img src="assets/frank.jpg" alt="Haonian (Frank) Wang" width="900" height="900" fetchpriority="high">
+      <figcaption>Kenan Stadium, Chapel Hill, 2026</figcaption>
+    </figure>
   </div>
 </div></header>
 
@@ -289,20 +301,11 @@ footer .row{display:flex;flex-wrap:wrap;gap:8px 22px;margin-bottom:14px}
   <p style="margin-top:26px"><b>Published:</b> <i>An improved DDPG algorithm based on evolution-guided transfer in reinforcement learning.</i> Xueqian Bai and Haonian Wang, 2024, J. Phys.: Conf. Ser. 2711 012016.</p>
 </div></section>
 
-<section id="about"><div class="col">
-  <div class="sk">About</div>
-  <div class="about">
-    <div>
-      <h2 style="margin-bottom:16px">Frank Wang</h2>
-      <p>Master of Science in Information Science, <b>UNC Chapel Hill</b>, 2026. Before that, Management Science at the University of Shanghai for Science and Technology.</p>
-      <p>My background is classical data science — NLP, time-series, experiment design, the statistics of deciding whether a result is real. What I have spent this year on is the newer problem sitting next to it: an LLM system can be confidently wrong in ways a regression never is, and most of the work is building the scaffolding that catches it before a customer does.</p>
-      <p>I am looking for roles where the AI has to work in front of someone who did not build it. Based in Durham, open to relocation, and reachable at <a href="mailto:frankwhn0227@outlook.com"><b>frankwhn0227@outlook.com</b></a>.</p>
-    </div>
-    <figure style="margin:0">
-      <img src="assets/frank.jpg" alt="Frank Wang in graduation regalia on the field at Kenan Stadium, UNC Chapel Hill" width="900" height="900" loading="lazy">
-      <figcaption>Kenan Stadium, Chapel Hill, 2026</figcaption>
-    </figure>
-  </div>
+<section id="background"><div class="col">
+  <div class="sk">Background</div>
+  <h2>Education and what I am looking for</h2>
+  <p><b>Master of Science, Information Science</b> — University of North Carolina at Chapel Hill, 2026. <b>Bachelor of Science, Management Science</b> — University of Shanghai for Science and Technology, 2024.</p>
+  <p>I am looking for roles where the AI has to work in front of someone who did not build it: applied AI and solutions engineering, data science on products that ship, anything where the job includes proving the thing works. Based in Durham, open to relocation, reachable at <a href="mailto:frankwhn0227@outlook.com"><b>frankwhn0227@outlook.com</b></a>.</p>
 </div></section>
 
 <footer><div class="col">
