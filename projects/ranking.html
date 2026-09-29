@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Retrieval and ranking for literature — Frank Wang</title>
+<meta name="description" content="A two-stage retrieval and learning-to-rank pipeline that cuts how much a systematic reviewer has to read.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="../assets/site.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%231E4D5C'/><text x='16' y='23' font-family='monospace' font-size='19' font-weight='700' fill='%23EFEFEC' text-anchor='middle'>F</text></svg>">
+</head>
+<body>
+
+<nav><div class="in">
+  <a class="me" href="../index.html">FRANK WANG</a>
+  <span class="lk">
+    <a href="../index.html#work">Work</a>
+    <a href="../index.html#background" class="opt">Background</a>
+    <a href="mailto:frankwhn0227@outlook.com">Contact</a>
+  </span>
+</div></nav>
+
+<div class="phead"><div class="col">
+  <a class="back" href="../index.html#work"><span>&larr;</span> All work</a>
+  <div class="tag">Research project &middot; learning to rank &middot; 2024</div>
+  <h1>Retrieval and ranking for academic literature</h1>
+  <p class="lede">A two-stage pipeline: topic modelling and cosine similarity generate candidates, then <b>LambdaMART</b> reranks them. Built for systematic review, where the cost is measured in how much a human has to read.</p>
+</div></div>
+
+<section><div class="col">
+  <div class="stats">
+    <div><b>15%</b><span>WSS@95 over baseline</span></div>
+    <div><b>2</b><span>stage pipeline</span></div>
+  </div>
+
+  <h2>Two stages, two different jobs</h2>
+  <p>Stage one is recall. LDA topic modelling and TF-IDF cosine similarity pull a candidate set wide enough that the relevant papers are almost certainly inside it. Precision at this stage does not matter much; missing something does.</p>
+  <p>Stage two is order. LambdaMART reranks the candidates, trained against NDCG so that getting the top of the list right counts for more than getting the tail right. That is the correct shape for the objective, because nobody reads the tail.</p>
+
+  <h2>Why WSS@95 is the metric that matters here</h2>
+  <p>Accuracy and F1 both miss the point of a systematic review. The reviewer is not going to accept missing relevant papers, so recall is effectively fixed near the top. The real question is <b>how much reading it takes to get there</b>.</p>
+  <p>Work Saved over Sampling at 95% recall measures exactly that: the fraction of the corpus a reviewer no longer has to screen while still finding 95% of what matters. A <b>15% improvement</b> over a logistic regression baseline is 15% of a reading pile that a person does not have to go through.</p>
+
+  <div class="aside">
+    Choosing the metric was most of the work. The same model looks unremarkable under accuracy and clearly useful under WSS@95, because only one of those two is measuring the thing the user actually pays for.
+  </div>
+  <div class="stack"><b>Stack</b> &mdash; Python &middot; LDA &middot; TF-IDF &middot; LambdaMART &middot; linear SVM with SGD</div>
+</div></section>
+
+<section><div class="col">
+  <div class="sk">Next</div>
+  <div class="nextprev">
+    <a href="agent.html"><span class="l">Previous</span><span class="t">Operations agent for local businesses</span></a>
+    <a href="hef.html"><span class="l">Next</span><span class="t">HEF Funding Navigator</span></a>
+  </div>
+</div></section>
+
+<footer><div class="col">
+  <div class="row">
+    <a href="mailto:frankwhn0227@outlook.com">frankwhn0227@outlook.com</a>
+    <a href="https://www.linkedin.com/in/frank-haonian-wang-465636354" target="_blank" rel="noopener">LinkedIn</a>
+    <a href="https://github.com/Frankkk-Wang" target="_blank" rel="noopener">GitHub</a>
+  </div>
+  <div>Static page on GitHub Pages. No trackers, no cookies.</div>
+</div></footer>
+
+</body>
+</html>

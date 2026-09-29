@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HEF Funding Navigator — Frank Wang</title>
+<meta name="description" content="A loan-navigation assistant for a Treasury-certified CDFI, live in production. Shipped in seven days.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="../assets/site.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%231E4D5C'/><text x='16' y='23' font-family='monospace' font-size='19' font-weight='700' fill='%23EFEFEC' text-anchor='middle'>F</text></svg>">
+</head>
+<body>
+
+<nav><div class="in">
+  <a class="me" href="../index.html">FRANK WANG</a>
+  <span class="lk">
+    <a href="../index.html#work">Work</a>
+    <a href="../index.html#background" class="opt">Background</a>
+    <a href="mailto:frankwhn0227@outlook.com">Contact</a>
+  </span>
+</div></nav>
+
+<div class="phead"><div class="col">
+  <a class="back" href="../index.html#work"><span>&larr;</span> All work</a>
+  <div class="tag">Naturalness.ai &middot; AI Solutions Engineer &middot; 2026</div>
+  <h1>HEF Funding Navigator</h1>
+  <p class="lede">An assistant for the <a href="https://www.hefnyc.org/" target="_blank" rel="noopener"><b>Harlem Entrepreneurial Fund</b></a>, a Treasury-certified CDFI that lends $2,500 to $350,000 to small businesses banks turn down. It matches people to a loan, tells them how loan-ready they are, and works out which licenses and permits their business needs.</p>
+</div></div>
+
+<section><div class="col">
+  <p>It is live on hefnyc.org. We shipped the first version in seven days, then rebuilt it once the evaluation results came back.</p>
+  <div class="stats">
+    <div><b>7 days</b><span>to first launch</span></div>
+    <div><b>437</b><span>unit tests</span></div>
+    <div><b>132</b><span>persona scenarios</span></div>
+    <div><b>98%</b><span>scenario pass rate</span></div>
+  </div>
+
+  <h2>The decision the whole thing rests on</h2>
+  <p>A language model asked to total five weighted factors and compare them against two thresholds gets it right most of the time, and <b>wrong quietly</b> the rest. Someone is told they are in the wrong tier, nobody notices, and the only trace is one bad conversation.</p>
+  <p>So the model classifies intent, pulls entities out of free text, and writes the prose. <b>Every number is computed in code.</b> Scoring, tier selection, product matching, permit-checklist assembly, PII redaction &mdash; none of it goes near the model.</p>
+  <div class="legend">
+    <i class="d">deterministic &mdash; code decides</i>
+    <i class="p">probabilistic &mdash; the model decides</i>
+  </div>
+</div>
+
+<div class="wide"><figure class="figure">
+<svg viewBox="0 0 960 330" role="img" aria-label="One conversation turn: redaction and routing are deterministic, intent classification and reply composition are model calls, and a deterministic line check gates the reply before it is sent.">
+  <defs>
+    <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="currentColor"/></marker>
+    <marker id="arp" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="var(--pro)"/></marker>
+  </defs>
+  <style>
+    .bx{fill:var(--surface);stroke:var(--det);stroke-width:1.5}
+    .bxp{fill:var(--pro-w);stroke:var(--pro);stroke-width:1.5}
+    .lbl{font-family:var(--mono);font-size:12.5px;fill:var(--ink);font-weight:500}
+    .sub{font-family:var(--mono);font-size:10.5px;fill:var(--ink-3)}
+    .ln{stroke:var(--det);stroke-width:1.4;fill:none;color:var(--det)}
+    .lnp{stroke:var(--pro);stroke-width:1.4;fill:none;stroke-dasharray:4 3;color:var(--pro)}
+    .step{font-family:var(--mono);font-size:10px;fill:var(--ink-3)}
+  </style>
+  <text class="step" x="12" y="26">01</text>
+  <rect class="bx" x="12" y="36" width="140" height="52" rx="3"/>
+  <text class="lbl" x="26" y="60">redact</text><text class="sub" x="26" y="76">before anything leaves</text>
+  <line class="ln" x1="152" y1="62" x2="196" y2="62" marker-end="url(#ar)"/>
+  <text class="step" x="204" y="26">02</text>
+  <rect class="bxp" x="204" y="36" width="160" height="52" rx="3"/>
+  <text class="lbl" x="218" y="60">classify + extract</text><text class="sub" x="218" y="76">two concurrent calls</text>
+  <line class="ln" x1="364" y1="62" x2="408" y2="62" marker-end="url(#ar)"/>
+  <text class="step" x="416" y="26">03</text>
+  <rect class="bx" x="416" y="36" width="150" height="52" rx="3"/>
+  <text class="lbl" x="430" y="60">floors</text><text class="sub" x="430" y="76">drop bad model output</text>
+  <line class="ln" x1="566" y1="62" x2="610" y2="62" marker-end="url(#ar)"/>
+  <text class="step" x="618" y="26">04</text>
+  <rect class="bx" x="618" y="36" width="170" height="52" rx="3"/>
+  <text class="lbl" x="632" y="60">routing ladder</text><text class="sub" x="632" y="76">15 guards, first hit wins</text>
+  <path class="ln" d="M788 62 H 840 a10 10 0 0 1 10 10 V 128 a10 10 0 0 1 -10 10 H 120" marker-end="url(#ar)"/>
+  <text class="step" x="12" y="128">05</text>
+  <rect class="bx" x="12" y="138" width="190" height="52" rx="3"/>
+  <text class="lbl" x="26" y="162">decision engine</text><text class="sub" x="26" y="178">score &middot; tier &middot; match &middot; checklist</text>
+  <line class="ln" x1="202" y1="164" x2="246" y2="164" marker-end="url(#ar)"/>
+  <text class="step" x="254" y="128">06</text>
+  <rect class="bxp" x="254" y="138" width="170" height="52" rx="3"/>
+  <text class="lbl" x="268" y="162">compose reply</text><text class="sub" x="268" y="178">from those facts only</text>
+  <line class="ln" x1="424" y1="164" x2="468" y2="164" marker-end="url(#ar)"/>
+  <text class="step" x="476" y="128">07</text>
+  <rect class="bx" x="476" y="138" width="180" height="52" rx="3"/>
+  <text class="lbl" x="490" y="162">line check</text><text class="sub" x="490" y="178">must / must-not contain</text>
+  <path class="lnp" d="M566 190 V 224 H 340 V 194" marker-end="url(#arp)"/>
+  <text class="sub" x="352" y="242" style="fill:var(--pro)">breach &rarr; regenerate once, then fall back to a template</text>
+  <line class="ln" x1="656" y1="164" x2="700" y2="164" marker-end="url(#ar)"/>
+  <rect class="bx" x="700" y="138" width="130" height="52" rx="3" style="fill:var(--det);stroke:var(--det)"/>
+  <text class="lbl" x="714" y="168" style="fill:var(--surface)">send</text>
+  <line x1="12" y1="286" x2="948" y2="286" stroke="var(--rule)" stroke-width="1"/>
+  <text class="sub" x="12" y="308">Guardrails never depend on a retrieval hit. The knowledge base sits in context and is read by lookup, not search.</text>
+</svg>
+<figcaption>One turn, end to end. Two of the seven steps are model calls. Everything that produces a number is code.</figcaption>
+</figure></div>
+
+<div class="col">
+  <h2>What that bought, and what it cost</h2>
+  <p>An earlier version put the compliance check in a second model call. It caught real problems, but at a round trip every turn for a <b>ten percent</b> hit rate, with false positives of its own: it rejected the free-advice referral the client requires, and read the lender's own $350,000 ceiling as an invented statistic. Its rules had grown to sixteen, which is the same accumulation it was brought in to stop, moved somewhere less visible.</p>
+  <p>What replaced it is a deterministic must-contain and must-not-contain check over what the knowledge base can enumerate. Free, exact, and incapable of having an off day.</p>
+
+  <div class="aside">
+    <b>The failure that changed how I build.</b> Early on the whole flow ran on unredacted text. Someone typed an EIN partway through a conversation. The parser saw nine digits, read it as a dollar amount, and overwrote the funding number they had given two turns earlier. Nothing threw an error. The conversation just kept going, quietly wrong. Redaction moved to the first step of the turn and split into two passes: one scrubs everything and that is what gets stored, one keeps the credit score so the engine can still band it. The figure lives one step and is thrown away.
+  </div>
+
+  <h2>My part in it</h2>
+  <p>The client supplied the specification, a reference engine and the knowledge base. I implemented the system against it and hardened it where production found the gaps: the fifteen-rung routing ladder, a second concurrent reader for user distress, a provider abstraction with an offline fallback, three salvage attempts before a question gives up and hands off, the two-pass redaction, and the deterministic line check. I owned the testing end to end, and the results are what drove the rebuild.</p>
+  <ul class="clean">
+    <li>Guardrails: no rates, no fees, no approvals, internal scores never shown to the user</li>
+    <li>PII redacted in both directions before storage, with tiered retention on what remains</li>
+    <li>A second client assistant for a student-housing operator, built and delivered on the same stack</li>
+  </ul>
+  <div class="stack"><b>Stack</b> &mdash; Python &middot; DeepSeek behind a swappable provider layer &middot; no vector store &middot; pytest</div>
+</div></section>
+
+<section><div class="col">
+  <div class="sk">Next</div>
+  <div class="nextprev">
+    <a href="ranking.html"><span class="l">Previous</span><span class="t">Retrieval and ranking for literature</span></a>
+    <a href="esg.html"><span class="l">Next</span><span class="t">ESG signals from news and filings</span></a>
+  </div>
+</div></section>
+
+<footer><div class="col">
+  <div class="row">
+    <a href="mailto:frankwhn0227@outlook.com">frankwhn0227@outlook.com</a>
+    <a href="https://www.linkedin.com/in/frank-haonian-wang-465636354" target="_blank" rel="noopener">LinkedIn</a>
+    <a href="https://github.com/Frankkk-Wang" target="_blank" rel="noopener">GitHub</a>
+  </div>
+  <div>Static page on GitHub Pages. No trackers, no cookies.</div>
+</div></footer>
+
+</body>
+</html>
