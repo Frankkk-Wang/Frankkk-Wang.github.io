@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Frank Wang — AI systems that hold up in production</title>
+<meta name="description" content="Haonian (Frank) Wang. I build conversational AI systems for enterprise clients and work out whether they actually hold up.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%231E4D5C'/><text x='16' y='23' font-family='monospace' font-size='19' font-weight='700' fill='%23EFEFEC' text-anchor='middle'>F</text></svg>">
+<style>
+:root{
+  --ground:#EFEFEC; --surface:#F7F7F5; --sunk:#E4E4DF;
+  --ink:#15171B; --ink-2:#4A4E52; --ink-3:#7C807C;
+  --rule:#D5D5CF; --rule-soft:#E4E4DE;
+  --det:#1E4D5C;  --det-w:#1E4D5C14;   /* deterministic: code decides */
+  --pro:#A8701C;  --pro-w:#A8701C14;   /* probabilistic: the model decides */
+  --sans:"Schibsted Grotesk",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --col:720px; --wide:1000px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --ground:#121417; --surface:#1A1D21; --sunk:#0D0F11;
+  --ink:#E9EAE6; --ink-2:#AFB4B2; --ink-3:#818682;
+  --rule:#2B2F33; --rule-soft:#22262A;
+  --det:#6FB6C6; --det-w:#6FB6C61F;
+  --pro:#D9A548; --pro-w:#D9A5481F;
+}}
+:root[data-theme="dark"]{
+  --ground:#121417; --surface:#1A1D21; --sunk:#0D0F11;
+  --ink:#E9EAE6; --ink-2:#AFB4B2; --ink-3:#818682;
+  --rule:#2B2F33; --rule-soft:#22262A;
+  --det:#6FB6C6; --det-w:#6FB6C61F;
+  --pro:#D9A548; --pro-w:#D9A5481F;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
+body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--sans);
+  font-size:17px;line-height:1.65;-webkit-font-smoothing:antialiased;font-feature-settings:"ss01";}
+.col{max-width:var(--col);margin:0 auto;padding:0 28px}
+.wide{max-width:var(--wide);margin:0 auto;padding:0 28px}
+a{color:inherit}
+a:focus-visible{outline:2px solid var(--det);outline-offset:3px;border-radius:2px}
+
+/* ── nav ─────────────────────────────────────────── */
+nav{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--ground) 88%,transparent);
+  backdrop-filter:blur(10px);border-bottom:1px solid var(--rule-soft)}
+nav .in{max-width:var(--wide);margin:0 auto;padding:13px 28px;display:flex;align-items:center;gap:22px}
+nav .me{font-family:var(--mono);font-size:12.5px;font-weight:600;letter-spacing:.02em;text-decoration:none}
+nav .lk{margin-left:auto;display:flex;gap:18px}
+nav .lk a{font-family:var(--mono);font-size:12px;color:var(--ink-3);text-decoration:none;letter-spacing:.02em}
+nav .lk a:hover{color:var(--ink)}
+@media(max-width:620px){nav .lk a.opt{display:none}}
+
+/* ── hero ────────────────────────────────────────── */
+header{padding:96px 0 72px;border-bottom:1px solid var(--rule)}
+.kicker{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:22px}
+h1{font-size:clamp(38px,7vw,68px);line-height:1.02;letter-spacing:-.033em;font-weight:800;margin:0 0 26px;text-wrap:balance}
+.lede{font-size:clamp(18px,2.3vw,21px);line-height:1.55;color:var(--ink-2);max-width:30em;margin:0 0 30px}
+.lede b{color:var(--ink);font-weight:600}
+.meta{display:flex;flex-wrap:wrap;gap:8px 10px}
+.meta a,.meta span{font-family:var(--mono);font-size:12.5px;padding:6px 12px;border:1px solid var(--rule);
+  border-radius:100px;text-decoration:none;color:var(--ink-2);background:var(--surface)}
+.meta a:hover{border-color:var(--ink);color:var(--ink)}
+.meta span{border-style:dashed;color:var(--ink-3)}
+
+/* ── section furniture ───────────────────────────── */
+section{padding:74px 0;border-bottom:1px solid var(--rule)}
+section:last-of-type{border-bottom:0}
+.sk{font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:14px;display:flex;align-items:center;gap:10px}
+.sk::after{content:"";flex:1;height:1px;background:var(--rule)}
+h2{font-size:clamp(26px,3.6vw,36px);line-height:1.12;letter-spacing:-.022em;font-weight:700;margin:0 0 18px;text-wrap:balance}
+h3{font-size:19px;line-height:1.3;letter-spacing:-.012em;font-weight:600;margin:0 0 8px}
+p{margin:0 0 17px;color:var(--ink-2)}
+p b,li b{color:var(--ink);font-weight:600}
+.big{font-size:19px;color:var(--ink)}
+
+/* ── legend ──────────────────────────────────────── */
+.legend{display:flex;flex-wrap:wrap;gap:10px 20px;margin:0 0 26px;font-family:var(--mono);font-size:12.5px}
+.legend i{display:inline-flex;align-items:center;gap:8px;font-style:normal;color:var(--ink-2)}
+.legend i::before{content:"";width:11px;height:11px;border-radius:2px;flex:none}
+.legend .d::before{background:var(--det)} .legend .p::before{background:var(--pro)}
+
+/* ── diagram ─────────────────────────────────────── */
+.figure{margin:34px 0 10px}
+.figure svg{width:100%;height:auto;display:block}
+figcaption{font-family:var(--mono);font-size:12px;color:var(--ink-3);margin-top:14px;line-height:1.6}
+
+/* ── stat strip ──────────────────────────────────── */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(132px,1fr));gap:1px;background:var(--rule);
+  border:1px solid var(--rule);margin:32px 0}
+.stats div{background:var(--ground);padding:16px 18px}
+.stats b{display:block;font-size:26px;font-weight:700;letter-spacing:-.025em;line-height:1.15;font-variant-numeric:tabular-nums}
+.stats span{font-family:var(--mono);font-size:11px;color:var(--ink-3);letter-spacing:.03em;display:block;margin-top:3px}
+
+/* ── notes / lists ───────────────────────────────── */
+ul.clean{list-style:none;padding:0;margin:0 0 17px}
+ul.clean li{position:relative;padding-left:20px;margin-bottom:10px;color:var(--ink-2)}
+ul.clean li::before{content:"";position:absolute;left:0;top:11px;width:7px;height:1.5px;background:var(--det)}
+.aside{border-left:2px solid var(--pro);background:var(--pro-w);padding:16px 20px;margin:26px 0;font-size:16px;color:var(--ink-2)}
+.aside b{color:var(--ink)}
+
+/* ── work cards ──────────────────────────────────── */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(272px,1fr));gap:16px;margin-top:8px}
+.card{border:1px solid var(--rule);background:var(--surface);padding:22px 22px 20px}
+.card .tag{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);margin-bottom:10px}
+.card p{font-size:15.5px;margin:0}
+.card .n{font-family:var(--mono);font-size:12.5px;color:var(--det);margin-top:12px;display:block;font-weight:500}
+
+/* ── about ───────────────────────────────────────── */
+.about{display:grid;grid-template-columns:minmax(0,1fr) 260px;gap:40px;align-items:start}
+@media(max-width:700px){.about{grid-template-columns:1fr;gap:28px}}
+.about img{width:100%;height:auto;display:block;border:1px solid var(--rule);filter:saturate(.92)}
+.about figcaption{margin-top:10px}
+
+/* ── footer ──────────────────────────────────────── */
+footer{padding:56px 0 76px;font-family:var(--mono);font-size:12.5px;color:var(--ink-3);line-height:1.9}
+footer a{color:var(--ink-2)}
+footer .row{display:flex;flex-wrap:wrap;gap:8px 22px;margin-bottom:14px}
+</style>
+</head>
+<body>
+
+<nav><div class="in">
+  <a class="me" href="#top">FRANK WANG</a>
+  <span class="lk">
+    <a href="#hef">HEF Navigator</a>
+    <a href="#signals" class="opt">ESG signals</a>
+    <a href="#work" class="opt">Other work</a>
+    <a href="#about">About</a>
+  </span>
+</div></nav>
+
+<header id="top"><div class="col">
+  <div class="kicker">Durham, NC · open to relocation</div>
+  <h1>I build conversational AI that has to survive a real customer.</h1>
+  <p class="lede">Right now that means an assistant for a <b>U.S. Treasury-certified community lender</b>, live in production. The interesting part was never getting it to talk. It was working out <b>whether it was right</b>, and making the parts that must not be wrong stop depending on a model.</p>
+  <div class="meta">
+    <a href="mailto:frankwhn0227@outlook.com">frankwhn0227@outlook.com</a>
+    <a href="https://www.linkedin.com/in/frank-haonian-wang-465636354" target="_blank" rel="noopener">LinkedIn</a>
+    <a href="https://github.com/Frankkk-Wang" target="_blank" rel="noopener">GitHub</a>
+    <span>MS Information Science, UNC</span>
+  </div>
+</div></header>
+
+<section id="hef"><div class="col">
+  <div class="sk">Case study</div>
+  <h2>HEF Funding Navigator</h2>
+  <p class="big">An assistant for the <a href="https://www.hefnyc.org/" target="_blank" rel="noopener"><b>Harlem Entrepreneurial Fund</b></a>, a Treasury-certified CDFI that lends $2,500 to $350,000 to small businesses banks turn down. It matches people to a loan, tells them how loan-ready they are, and works out which licenses and permits their business needs.</p>
+  <p>It is live on hefnyc.org. We shipped the first version in seven days, then rebuilt it once the evaluation results came back.</p>
+
+  <div class="stats">
+    <div><b>7 days</b><span>to first launch</span></div>
+    <div><b>437</b><span>unit tests</span></div>
+    <div><b>132</b><span>persona scenarios</span></div>
+    <div><b>98%</b><span>scenario pass rate</span></div>
+  </div>
+
+  <h3>The decision the whole thing rests on</h3>
+  <p>A language model asked to total five weighted factors and compare them against two thresholds gets it right most of the time, and <b>wrong quietly</b> the rest. Someone is told they are in the wrong tier, nobody notices, and the only trace is one bad conversation.</p>
+  <p>So the model classifies intent, pulls entities out of free text, and writes the prose. <b>Every number is computed in code.</b> Scoring, tier selection, product matching, permit-checklist assembly, PII redaction — none of it goes near the model.</p>
+
+  <div class="legend">
+    <i class="d">deterministic — code decides</i>
+    <i class="p">probabilistic — the model decides</i>
+  </div>
+</div>
+
+<div class="wide"><figure class="figure">
+<svg viewBox="0 0 960 330" role="img" aria-label="One conversation turn: redaction and routing are deterministic, intent classification and reply composition are model calls, and a deterministic line check gates the reply before it is sent.">
+  <defs>
+    <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0 0 L10 5 L0 10 z" fill="currentColor"/>
+    </marker>
+    <marker id="arp" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0 0 L10 5 L0 10 z" fill="var(--pro)"/>
+    </marker>
+  </defs>
+  <style>
+    .bx{fill:var(--surface);stroke:var(--det);stroke-width:1.5}
+    .bxp{fill:var(--pro-w);stroke:var(--pro);stroke-width:1.5}
+    .lbl{font-family:var(--mono);font-size:12.5px;fill:var(--ink);font-weight:500}
+    .sub{font-family:var(--mono);font-size:10.5px;fill:var(--ink-3)}
+    .ln{stroke:var(--det);stroke-width:1.4;fill:none;color:var(--det)}
+    .lnp{stroke:var(--pro);stroke-width:1.4;fill:none;stroke-dasharray:4 3;color:var(--pro)}
+    .step{font-family:var(--mono);font-size:10px;fill:var(--ink-3)}
+  </style>
+
+  <text class="step" x="12" y="26">01</text>
+  <rect class="bx" x="12" y="36" width="140" height="52" rx="3"/>
+  <text class="lbl" x="26" y="60">redact</text><text class="sub" x="26" y="76">before anything leaves</text>
+
+  <line class="ln" x1="152" y1="62" x2="196" y2="62" marker-end="url(#ar)"/>
+
+  <text class="step" x="204" y="26">02</text>
+  <rect class="bxp" x="204" y="36" width="160" height="52" rx="3"/>
+  <text class="lbl" x="218" y="60">classify + extract</text><text class="sub" x="218" y="76">two concurrent calls</text>
+
+  <line class="ln" x1="364" y1="62" x2="408" y2="62" marker-end="url(#ar)"/>
+
+  <text class="step" x="416" y="26">03</text>
+  <rect class="bx" x="416" y="36" width="150" height="52" rx="3"/>
+  <text class="lbl" x="430" y="60">floors</text><text class="sub" x="430" y="76">drop bad model output</text>
+
+  <line class="ln" x1="566" y1="62" x2="610" y2="62" marker-end="url(#ar)"/>
+
+  <text class="step" x="618" y="26">04</text>
+  <rect class="bx" x="618" y="36" width="170" height="52" rx="3"/>
+  <text class="lbl" x="632" y="60">routing ladder</text><text class="sub" x="632" y="76">15 guards, first hit wins</text>
+
+  <path class="ln" d="M788 62 H 840 a10 10 0 0 1 10 10 V 128 a10 10 0 0 1 -10 10 H 120" marker-end="url(#ar)"/>
+
+  <text class="step" x="12" y="128">05</text>
+  <rect class="bx" x="12" y="138" width="190" height="52" rx="3"/>
+  <text class="lbl" x="26" y="162">decision engine</text><text class="sub" x="26" y="178">score · tier · match · checklist</text>
+
+  <line class="ln" x1="202" y1="164" x2="246" y2="164" marker-end="url(#ar)"/>
+
+  <text class="step" x="254" y="128">06</text>
+  <rect class="bxp" x="254" y="138" width="170" height="52" rx="3"/>
+  <text class="lbl" x="268" y="162">compose reply</text><text class="sub" x="268" y="178">from those facts only</text>
+
+  <line class="ln" x1="424" y1="164" x2="468" y2="164" marker-end="url(#ar)"/>
+
+  <text class="step" x="476" y="128">07</text>
+  <rect class="bx" x="476" y="138" width="180" height="52" rx="3"/>
+  <text class="lbl" x="490" y="162">line check</text><text class="sub" x="490" y="178">must / must-not contain</text>
+
+  <path class="lnp" d="M566 190 V 224 H 340 V 194" marker-end="url(#arp)"/>
+  <text class="sub" x="352" y="242" style="fill:var(--pro)">breach → regenerate once, then fall back to a template</text>
+
+  <line class="ln" x1="656" y1="164" x2="700" y2="164" marker-end="url(#ar)"/>
+  <rect class="bx" x="700" y="138" width="130" height="52" rx="3" style="fill:var(--det);stroke:var(--det)"/>
+  <text class="lbl" x="714" y="168" style="fill:var(--surface)">send</text>
+
+  <line x1="12" y1="286" x2="948" y2="286" stroke="var(--rule)" stroke-width="1"/>
+  <text class="sub" x="12" y="308">Guardrails never depend on a retrieval hit. The knowledge base sits in context and is read by lookup, not search.</text>
+</svg>
+<figcaption>One turn, end to end. Two of the seven steps are model calls. Everything that produces a number is code.</figcaption>
+</figure></div>
+
+<div class="col">
+  <h3>What that bought, and what it cost</h3>
+  <p>An earlier version put the compliance check in a second model call. It caught real problems, but at a round trip every turn for a <b>ten percent</b> hit rate, with false positives of its own: it rejected the free-advice referral the client requires, and read the lender's own $350,000 ceiling as an invented statistic. Its rules had grown to sixteen, which is the same accumulation it was brought in to stop, moved somewhere less visible.</p>
+  <p>What replaced it is a deterministic must-contain and must-not-contain check over what the knowledge base can enumerate. Free, exact, and incapable of having an off day.</p>
+
+  <div class="aside">
+    <b>The failure that changed how I build.</b> Early on the whole flow ran on unredacted text. Someone typed an EIN partway through a conversation. The parser saw nine digits, read it as a dollar amount, and overwrote the funding number they had given two turns earlier. Nothing threw an error. The conversation just kept going, quietly wrong. Redaction moved to the first step of the turn and split into two passes: one scrubs everything and that is what gets stored, one keeps the credit score so the engine can still band it. The figure lives one step and is thrown away.
+  </div>
+
+  <h3>My part in it</h3>
+  <p>The client supplied the specification, a reference engine and the knowledge base. I implemented the system against it and hardened it where production found the gaps: the fifteen-rung routing ladder, a second concurrent reader for user distress, a provider abstraction with an offline fallback, three salvage attempts before a question gives up and hands off, the two-pass redaction, and the deterministic line check. I owned the testing end to end, and the results are what drove the rebuild.</p>
+  <ul class="clean">
+    <li>Python, DeepSeek behind a swappable provider layer, no vector store</li>
+    <li>Guardrails: no rates, no fees, no approvals, internal scores never shown</li>
+    <li>PII redacted in both directions before storage, with tiered retention on the rest</li>
+  </ul>
+</div>
+</section>
+
+<section id="signals"><div class="col">
+  <div class="sk">Previously</div>
+  <h2>Turning news into signals that survive a check</h2>
+  <p class="big">Five months at an alternative-data firm whose NLP pipeline reads news, filings and NGO reports across dozens of languages and turns them into company-level signals for quant researchers.</p>
+  <p>I worked on the ESG side: classifying events out of unstructured text, then aggregating them into company-date signals. I benchmarked gradient boosting, embedding-based neural models and ensembles against a TF-IDF baseline, and chose <b>Macro F1</b> over accuracy because the label set is badly imbalanced and accuracy would have let the frequent categories hide everything else. It went up roughly <b>15%</b> over the production baseline, with the gains sitting in the low-frequency categories where they mattered.</p>
+  <p>The signals then had to earn their place. A company with hundreds of articles a day and one with almost none cannot be compared raw, so each signal was normalized against the company's own media history and its industry, with near-duplicate coverage clustered first — otherwise one syndicated story counts ten times. Then validated against forward returns and realized volatility using <b>cross-sectional information coefficient</b>, controlling for industry and market cap. The question was never whether ESG events move prices. It was whether the signal carried information that was not already there.</p>
+  <p>I also cut the NLP pipeline's cost: batching embedding generation, caching document embeddings, skipping unchanged documents and vectorizing preprocessing raised throughput about <b>20%</b> on a fixed benchmark. And I compared machine translation against multilingual sentence embeddings for non-English text, which let translation be dropped for everything except low-confidence cases.</p>
+</div></section>
+
+<section id="work"><div class="col">
+  <div class="sk">Other work</div>
+  <h2>Smaller things I have shipped</h2>
+  <div class="cards">
+    <div class="card">
+      <div class="tag">n8n · GPT API</div>
+      <h3>Operations agent for local businesses</h3>
+      <p>An AI operations agent for appointment-driven businesses — salons, restaurants — that monitors Google reviews, drafts context-aware replies and handles customer email. It reads review, email and booking signals together to surface demand patterns and peak windows, and turns those into staffing and scheduling suggestions for the owner.</p>
+      <span class="n">2026</span>
+    </div>
+    <div class="card">
+      <div class="tag">LDA · TF-IDF · LambdaMART</div>
+      <h3>Retrieval and ranking for academic literature</h3>
+      <p>A two-stage pipeline: topic modelling and cosine similarity generate candidates, then LambdaMART reranks them. Optimized for NDCG, and it reached a <b>15% WSS@95</b> improvement over a logistic regression baseline — meaning a systematic reviewer reads far fewer papers to find the same 95% of relevant ones.</p>
+      <span class="n">2024</span>
+    </div>
+  </div>
+  <p style="margin-top:26px"><b>Published:</b> <i>An improved DDPG algorithm based on evolution-guided transfer in reinforcement learning.</i> Xueqian Bai and Haonian Wang, 2024, J. Phys.: Conf. Ser. 2711 012016.</p>
+</div></section>
+
+<section id="about"><div class="col">
+  <div class="sk">About</div>
+  <div class="about">
+    <div>
+      <h2 style="margin-bottom:16px">Frank Wang</h2>
+      <p>Master of Science in Information Science, <b>UNC Chapel Hill</b>, 2026. Before that, Management Science at the University of Shanghai for Science and Technology.</p>
+      <p>My background is classical data science — NLP, time-series, experiment design, the statistics of deciding whether a result is real. What I have spent this year on is the newer problem sitting next to it: an LLM system can be confidently wrong in ways a regression never is, and most of the work is building the scaffolding that catches it before a customer does.</p>
+      <p>I am looking for roles where the AI has to work in front of someone who did not build it. Based in Durham, open to relocation, and reachable at <a href="mailto:frankwhn0227@outlook.com"><b>frankwhn0227@outlook.com</b></a>.</p>
+    </div>
+    <figure style="margin:0">
+      <img src="assets/frank.jpg" alt="Frank Wang in graduation regalia on the field at Kenan Stadium, UNC Chapel Hill" width="900" height="900" loading="lazy">
+      <figcaption>Kenan Stadium, Chapel Hill, 2026</figcaption>
+    </figure>
+  </div>
+</div></section>
+
+<footer><div class="col">
+  <div class="row">
+    <a href="mailto:frankwhn0227@outlook.com">frankwhn0227@outlook.com</a>
+    <a href="https://www.linkedin.com/in/frank-haonian-wang-465636354" target="_blank" rel="noopener">LinkedIn</a>
+    <a href="https://github.com/Frankkk-Wang" target="_blank" rel="noopener">GitHub</a>
+  </div>
+  <div>Built as a static page and hosted on GitHub Pages. No trackers, no cookies.</div>
+</div></footer>
+
+</body>
+</html>
