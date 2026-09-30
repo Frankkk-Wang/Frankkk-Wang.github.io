@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sentiment and events across 30 countries — Frank Wang</title>
+<meta name="description" content="A million COVID-era tweets through Twitter-RoBERTa, then time-series decomposition and VAR to test whether mood followed events or ran ahead of them.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="../assets/site.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%231E4D5C'/><text x='16' y='23' font-family='monospace' font-size='19' font-weight='700' fill='%23EFEFEC' text-anchor='middle'>F</text></svg>">
+</head>
+<body>
+
+<nav><div class="in">
+  <a class="me" href="../index.html">FRANK WANG</a>
+  <span class="lk">
+    <a href="../index.html#work">Work</a>
+    <a href="../index.html#background" class="opt">Background</a>
+    <a href="mailto:frankwhn0227@outlook.com">Contact</a>
+  </span>
+</div></nav>
+
+<div class="phead"><div class="col">
+  <a class="back" href="../index.html#work"><span>&larr;</span> All work</a>
+  <div class="tag">Research project &middot; NLP at scale &middot; 2025</div>
+  <h1>Did the mood follow the news, or lead it?</h1>
+  <p class="lede">Over <b>a million</b> COVID-era tweets across <b>30 countries</b>, classified for sentiment and event type, then lined up against the actual timeline of what happened.</p>
+</div></div>
+
+<section><div class="col">
+  <div class="stats">
+    <div><b>1M+</b><span>tweets processed</span></div>
+    <div><b>30</b><span>countries</span></div>
+    <div><b>VAR</b><span>lead-lag test</span></div>
+  </div>
+
+  <h2>The pipeline</h2>
+  <p>Sentiment came from <b>CardiffNLP Twitter-RoBERTa</b>, which is trained on the register people actually write in online rather than on product reviews or newswire. Event categorisation was a separate transformer pass, so that a post could be negative <i>and</i> about a lockdown announcement rather than the two being conflated.</p>
+  <p>The multilingual part is where most of the mess lives. The same event produces different volumes, different vocabulary and different baseline positivity in each language, so nothing can be compared across countries until each country is normalised against its own baseline.</p>
+
+  <h2>The question that made it interesting</h2>
+  <p>Plotting sentiment against events gives you a picture that always looks meaningful and usually is not. Mood is autocorrelated, events cluster, and almost any two time series with trends will appear to move together.</p>
+  <p>So the analysis was built around <b>vector autoregression</b>, which asks a narrower and more honest question: once a country's own sentiment history is accounted for, does knowing the event timeline improve the prediction? Time-series decomposition separated the trend and the weekly cycle first, because otherwise the weekend effect alone can masquerade as a response to policy.</p>
+
+  <div class="aside">
+    What I took from it: with a million rows it is trivially easy to produce a chart that tells a story. The work is constructing the version of the question where a negative answer would actually show up.
+  </div>
+
+  <p>Unsupervised clustering grouped countries by response shape rather than by geography, LSTM models in PyTorch tested short-horizon forecastability, and the results went into interactive dashboards so the country-by-country differences could be read directly instead of through a summary statistic.</p>
+  <div class="stack"><b>Stack</b> &mdash; Python &middot; Twitter-RoBERTa &middot; PyTorch &middot; statsmodels VAR &middot; pandas</div>
+</div></section>
+
+<section><div class="col">
+  <div class="sk">Next</div>
+  <div class="nextprev">
+    <a href="esg.html"><span class="l">Previous</span><span class="t">ESG signals from news and filings</span></a>
+    <a href="ranking.html"><span class="l">Next</span><span class="t">Retrieval and ranking for literature</span></a>
+  </div>
+</div></section>
+
+<footer><div class="col">
+  <div class="row">
+    <a href="mailto:frankwhn0227@outlook.com">frankwhn0227@outlook.com</a>
+    <a href="https://www.linkedin.com/in/frank-haonian-wang-465636354" target="_blank" rel="noopener">LinkedIn</a>
+    <a href="https://github.com/Frankkk-Wang" target="_blank" rel="noopener">GitHub</a>
+  </div>
+  <div>Static page on GitHub Pages. No trackers, no cookies.</div>
+</div></footer>
+
+</body>
+</html>

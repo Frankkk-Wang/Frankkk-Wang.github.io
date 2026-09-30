@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The expansion that did not happen — Frank Wang</title>
+<meta name="description" content="Demand forecasting, logistics risk and a Monte Carlo over unit economics, built to answer one go or no-go question.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="../assets/site.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%231E4D5C'/><text x='16' y='23' font-family='monospace' font-size='19' font-weight='700' fill='%23EFEFEC' text-anchor='middle'>F</text></svg>">
+</head>
+<body>
+
+<nav><div class="in">
+  <a class="me" href="../index.html">FRANK WANG</a>
+  <span class="lk">
+    <a href="../index.html#work">Work</a>
+    <a href="../index.html#background" class="opt">Background</a>
+    <a href="mailto:frankwhn0227@outlook.com">Contact</a>
+  </span>
+</div></nav>
+
+<div class="phead"><div class="col">
+  <a class="back" href="../index.html#work"><span>&larr;</span> All work</a>
+  <div class="tag">PMI Foods &middot; Data Intern &middot; 2024</div>
+  <h1>The expansion that did not happen</h1>
+  <p class="lede">A scale-up was on the table. I built the model that answered whether it would pay back, and the answer was <b>no</b> &mdash; which is the outcome that saved roughly <b>$10M</b>.</p>
+</div></div>
+
+<section><div class="col">
+  <h2>Three models, one decision</h2>
+  <ul class="clean">
+    <li><b>Demand forecasting</b> on historical sales, to get an honest range rather than the optimistic single line a plan tends to start from</li>
+    <li><b>Logistics risk</b> on shipping and lead-time data, because the cost of the expansion was mostly a distribution problem, not a production one</li>
+    <li><b>Monte Carlo over unit economics</b>, running the whole thing thousands of times across the plausible spread of demand, cost and delay</li>
+  </ul>
+
+  <h2>Why simulation rather than a spreadsheet</h2>
+  <p>A single-point forecast answers the wrong question. Leadership was not asking what the most likely outcome was; they were asking whether it was safe to commit. Those need different objects: one needs an estimate, the other needs a distribution.</p>
+  <p>The Monte Carlo put almost the entire outcome distribution on the wrong side of break-even. Not marginal, not sensitive to one assumption &mdash; the mass was simply in the wrong place. That is a far easier result to act on than a point estimate that happens to be slightly negative, because it survives an argument about any individual input.</p>
+
+  <div class="aside">
+    The deliverable was a recommendation not to proceed. It is the piece of analysis I am most sure was correct, and the only way anyone would ever have found out it was wrong is if they had ignored it.
+  </div>
+
+  <h2>The unglamorous half</h2>
+  <p>None of the above runs without the data being trustworthy. I worked on the databases underneath it: supporting warehouse and ETL design, tightening access control and data quality, and rewriting queries and indexes to get processing about <b>30% faster</b> &mdash; which matters when a simulation has to be re-run every time an assumption is challenged.</p>
+  <p>I also built the Power BI and Tableau dashboards that tracked operational and financial KPIs day to day, which is where the disagreements about metric definitions surfaced and got settled.</p>
+  <div class="stack"><b>Stack</b> &mdash; Python &middot; Monte Carlo simulation &middot; SQL &middot; ETL &middot; Power BI &middot; Tableau</div>
+</div></section>
+
+<section><div class="col">
+  <div class="sk">Next</div>
+  <div class="nextprev">
+    <a href="ranking.html"><span class="l">Previous</span><span class="t">Retrieval and ranking for literature</span></a>
+    <a href="stock.html"><span class="l">Next</span><span class="t">Price forecasting with sentiment features</span></a>
+  </div>
+</div></section>
+
+<footer><div class="col">
+  <div class="row">
+    <a href="mailto:frankwhn0227@outlook.com">frankwhn0227@outlook.com</a>
+    <a href="https://www.linkedin.com/in/frank-haonian-wang-465636354" target="_blank" rel="noopener">LinkedIn</a>
+    <a href="https://github.com/Frankkk-Wang" target="_blank" rel="noopener">GitHub</a>
+  </div>
+  <div>Static page on GitHub Pages. No trackers, no cookies.</div>
+</div></footer>
+
+</body>
+</html>

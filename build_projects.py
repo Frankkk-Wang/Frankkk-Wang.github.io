@@ -241,11 +241,124 @@ PAGES = {
   <div class="stack"><b>Stack</b> &mdash; Python &middot; LDA &middot; TF-IDF &middot; LambdaMART &middot; linear SVM with SGD</div>
 </div></section>
 """),
+
+"covid": dict(
+  title="Sentiment and events across 30 countries",
+  desc="A million COVID-era tweets through Twitter-RoBERTa, then time-series decomposition and VAR to test whether mood followed events or ran ahead of them.",
+  tag="Research project &middot; NLP at scale &middot; 2025",
+  h1="Did the mood follow the news, or lead it?",
+  lede="Over <b>a million</b> COVID-era tweets across <b>30 countries</b>, classified for sentiment and event type, then lined up against the actual timeline of what happened.",
+  body="""
+<section><div class="col">
+  <div class="stats">
+    <div><b>1M+</b><span>tweets processed</span></div>
+    <div><b>30</b><span>countries</span></div>
+    <div><b>VAR</b><span>lead-lag test</span></div>
+  </div>
+
+  <h2>The pipeline</h2>
+  <p>Sentiment came from <b>CardiffNLP Twitter-RoBERTa</b>, which is trained on the register people actually write in online rather than on product reviews or newswire. Event categorisation was a separate transformer pass, so that a post could be negative <i>and</i> about a lockdown announcement rather than the two being conflated.</p>
+  <p>The multilingual part is where most of the mess lives. The same event produces different volumes, different vocabulary and different baseline positivity in each language, so nothing can be compared across countries until each country is normalised against its own baseline.</p>
+
+  <h2>The question that made it interesting</h2>
+  <p>Plotting sentiment against events gives you a picture that always looks meaningful and usually is not. Mood is autocorrelated, events cluster, and almost any two time series with trends will appear to move together.</p>
+  <p>So the analysis was built around <b>vector autoregression</b>, which asks a narrower and more honest question: once a country's own sentiment history is accounted for, does knowing the event timeline improve the prediction? Time-series decomposition separated the trend and the weekly cycle first, because otherwise the weekend effect alone can masquerade as a response to policy.</p>
+
+  <div class="aside">
+    What I took from it: with a million rows it is trivially easy to produce a chart that tells a story. The work is constructing the version of the question where a negative answer would actually show up.
+  </div>
+
+  <p>Unsupervised clustering grouped countries by response shape rather than by geography, LSTM models in PyTorch tested short-horizon forecastability, and the results went into interactive dashboards so the country-by-country differences could be read directly instead of through a summary statistic.</p>
+  <div class="stack"><b>Stack</b> &mdash; Python &middot; Twitter-RoBERTa &middot; PyTorch &middot; statsmodels VAR &middot; pandas</div>
+</div></section>
+"""),
+
+"pmi": dict(
+  title="The expansion that did not happen",
+  desc="Demand forecasting, logistics risk and a Monte Carlo over unit economics, built to answer one go or no-go question.",
+  tag="PMI Foods &middot; Data Intern &middot; 2024",
+  h1="The expansion that did not happen",
+  lede="A scale-up was on the table. I built the model that answered whether it would pay back, and the answer was <b>no</b> &mdash; which is the outcome that saved roughly <b>$10M</b>.",
+  body="""
+<section><div class="col">
+  <h2>Three models, one decision</h2>
+  <ul class="clean">
+    <li><b>Demand forecasting</b> on historical sales, to get an honest range rather than the optimistic single line a plan tends to start from</li>
+    <li><b>Logistics risk</b> on shipping and lead-time data, because the cost of the expansion was mostly a distribution problem, not a production one</li>
+    <li><b>Monte Carlo over unit economics</b>, running the whole thing thousands of times across the plausible spread of demand, cost and delay</li>
+  </ul>
+
+  <h2>Why simulation rather than a spreadsheet</h2>
+  <p>A single-point forecast answers the wrong question. Leadership was not asking what the most likely outcome was; they were asking whether it was safe to commit. Those need different objects: one needs an estimate, the other needs a distribution.</p>
+  <p>The Monte Carlo put almost the entire outcome distribution on the wrong side of break-even. Not marginal, not sensitive to one assumption &mdash; the mass was simply in the wrong place. That is a far easier result to act on than a point estimate that happens to be slightly negative, because it survives an argument about any individual input.</p>
+
+  <div class="aside">
+    The deliverable was a recommendation not to proceed. It is the piece of analysis I am most sure was correct, and the only way anyone would ever have found out it was wrong is if they had ignored it.
+  </div>
+
+  <h2>The unglamorous half</h2>
+  <p>None of the above runs without the data being trustworthy. I worked on the databases underneath it: supporting warehouse and ETL design, tightening access control and data quality, and rewriting queries and indexes to get processing about <b>30% faster</b> &mdash; which matters when a simulation has to be re-run every time an assumption is challenged.</p>
+  <p>I also built the Power BI and Tableau dashboards that tracked operational and financial KPIs day to day, which is where the disagreements about metric definitions surfaced and got settled.</p>
+  <div class="stack"><b>Stack</b> &mdash; Python &middot; Monte Carlo simulation &middot; SQL &middot; ETL &middot; Power BI &middot; Tableau</div>
+</div></section>
+"""),
+
+"stock": dict(
+  title="Price forecasting with sentiment features",
+  desc="LSTM time-series combined with multivariate regression over technical indicators, volatility and news sentiment.",
+  tag="Research project &middot; LSTM + sentiment &middot; 2024",
+  h1="Price forecasting with sentiment features",
+  lede="A hybrid of <b>LSTM time-series</b> and multivariate regression over technical indicators, volatility measures and sentiment extracted from financial news and social text.",
+  body="""
+<section><div class="col">
+  <div class="stats">
+    <div><b>0.708 &rarr; 0.746</b><span>R&sup2;</span></div>
+    <div><b>86.75%</b><span>F1, direction</span></div>
+    <div><b>K-fold</b><span>cross-validated</span></div>
+  </div>
+
+  <h2>Why hybrid</h2>
+  <p>Price series carry sequence structure an LSTM is good at. Technical indicators, volatility measures and sentiment scores are mostly tabular features with roughly linear contributions, and forcing them through a recurrent model buys nothing. So each half handled what it was suited to, and the two were combined rather than made to compete.</p>
+
+  <h2>Where the actual work went</h2>
+  <p>Not the architecture. Financial series are short, noisy and non-stationary, which means a model can fit beautifully and generalise not at all, and the failure mode looks exactly like success on the training curve.</p>
+  <p>So most of the effort was the discipline around it: dropout, <b>K-fold cross-validation</b>, hyperparameter tuning and learning-rate scheduling. R&sup2; moving from 0.708 to 0.746 across multiple market conditions is a modest gain, and the modesty is the honest part &mdash; a much larger number on this kind of data would mostly be evidence of a leak.</p>
+
+  <div class="aside">
+    This is a research exercise, not a trading system. It tests whether sentiment features add incremental information to a price model. It does not survive transaction costs, and it was never asked to.
+  </div>
+  <div class="stack"><b>Stack</b> &mdash; Python &middot; PyTorch &middot; LSTM &middot; scikit-learn &middot; news and social sentiment features</div>
+</div></section>
+"""),
+
+"usst": dict(
+  title="Evacuation modelling for high-rise buildings",
+  desc="Multimodal wearable-sensor data from evacuation trials, cleaned into features and used to estimate egress time.",
+  tag="USST &middot; Research assistant &middot; 2023&ndash;2024",
+  h1="How long does a tower actually take to empty?",
+  lede="Wearable sensors on people walking down real high-rise stairwells, turned into <b>gait and cardiovascular features</b>, then into an estimate of evacuation time that emergency planning could use.",
+  body="""
+<section><div class="col">
+  <h2>Sensor data is not tidy data</h2>
+  <p>Physiological recordings from people moving are full of motion artefacts, dropouts and drift. Before anything can be modelled, the signal has to be made trustworthy: noise filtering, anomaly detection for the stretches where a sensor lost contact, and feature engineering to pull out the things that actually describe how someone is descending &mdash; stride cadence, pace decay, heart-rate response to sustained exertion.</p>
+  <p>The cardiovascular side matters more than it first appears. Evacuation time is not set by how fast people can walk down stairs; it is set by how fast they can <b>keep</b> walking down stairs, which is a fatigue question, and fatigue shows up in heart rate long before it shows up in speed.</p>
+
+  <h2>From individuals to a building</h2>
+  <p>Exploratory analysis across Python, MATLAB and SPSS looked for the behavioural and physiological patterns that repeated across trials, and those fed preliminary evacuation-time forecasting models. The purpose was parameterisation: the models exist so that control strategies &mdash; staging floors, timing releases &mdash; can be evaluated without running another live trial every time.</p>
+
+  <div class="aside">
+    First time I worked on something where the data collection was the hard part and the modelling was comparatively easy. It is also where I learned how much of a result is decided before anyone opens a notebook.
+  </div>
+  <div class="stack"><b>Stack</b> &mdash; Python &middot; MATLAB &middot; SPSS &middot; wearable sensor preprocessing &middot; time-series features</div>
+</div></section>
+"""),
 }
 
-ORDER = ["hef","esg","agent","ranking"]
+ORDER = ["hef","agent","esg","covid","ranking","pmi","stock","usst"]
 LABEL = {"hef":"HEF Funding Navigator","esg":"ESG signals from news and filings",
-         "agent":"Operations agent for local businesses","ranking":"Retrieval and ranking for literature"}
+         "agent":"Operations agent for local businesses","ranking":"Retrieval and ranking for literature",
+         "covid":"Sentiment and events across 30 countries","pmi":"The expansion that did not happen",
+         "stock":"Price forecasting with sentiment features","usst":"Evacuation modelling for high-rise buildings"}
 
 for i,key in enumerate(ORDER):
     p = PAGES[key]

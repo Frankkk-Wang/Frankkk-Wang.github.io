@@ -1,0 +1,188 @@
+# Rewrites the #work section of index.html: eight items, grouped into three categories.
+import os, re, io
+HERE = os.path.dirname(os.path.abspath(__file__))
+IDX  = os.path.join(HERE, "index.html")
+
+def card(href, tag, title, blurb, stat, cover):
+    return f'''    <a class="proj" href="{href}">
+      <span class="cover">{cover}</span>
+      <span class="body">
+        <span class="tag">{tag}</span>
+        <h3>{title}</h3>
+        <p>{blurb}</p>
+        <span class="foot"><span class="stat">{stat}</span><span class="go">Read<span class="arrow">&rarr;</span></span></span>
+      </span>
+    </a>'''
+
+S = '<svg class="cv" viewBox="0 0 400 225" role="img" aria-label="%s"><rect class="bg" width="400" height="225"/>%s</svg>'
+
+CV = {}
+
+CV["hef"] = S % ("Two model steps on the left, four deterministic steps on the right, divided by a line", """
+ <line class="hair" x1="168" y1="26" x2="168" y2="199"/>
+ <text class="t" x="34" y="40">model</text><text class="t" x="196" y="40">code</text>
+ <rect class="p" x="34" y="56" width="104" height="30" rx="3"/><rect class="p" x="34" y="100" width="104" height="30" rx="3"/>
+ <rect class="d" x="196" y="56" width="120" height="22" rx="3"/><rect class="d" x="196" y="86" width="120" height="22" rx="3"/>
+ <rect class="d" x="196" y="116" width="120" height="22" rx="3"/><rect class="d" x="196" y="146" width="120" height="22" rx="3"/>
+ <circle class="pf" cx="52" cy="71" r="3"/><circle class="pf" cx="52" cy="115" r="3"/>
+ <circle class="df" cx="212" cy="67" r="3"/><circle class="df" cx="212" cy="97" r="3"/>
+ <circle class="df" cx="212" cy="127" r="3"/><circle class="df" cx="212" cy="157" r="3"/>
+ <path class="d" d="M138 71 H 168 M138 115 H 168" stroke-dasharray="3 3"/>
+ <text class="t" x="34" y="186">every number is computed here &rarr;</text>""")
+
+CV["agent"] = S % ("Three input streams converge on one agent node and fan out to two outputs", """
+ <rect class="d" x="30" y="52" width="76" height="24" rx="3"/><rect class="d" x="30" y="100" width="76" height="24" rx="3"/>
+ <rect class="d" x="30" y="148" width="76" height="24" rx="3"/>
+ <path class="d" d="M106 64 C 146 64 146 112 176 112"/><path class="d" d="M106 112 H 176"/>
+ <path class="d" d="M106 160 C 146 160 146 112 176 112"/>
+ <rect class="p" x="176" y="92" width="72" height="40" rx="4"/><circle class="pf" cx="212" cy="112" r="4"/>
+ <path class="d" d="M248 112 C 282 112 282 76 312 76"/><path class="d" d="M248 112 C 282 112 282 148 312 148"/>
+ <rect class="d" x="312" y="64" width="58" height="24" rx="3"/><rect class="d" x="312" y="136" width="58" height="24" rx="3"/>
+ <text class="t" x="30" y="40">reviews &middot; email &middot; bookings</text>
+ <text class="t" x="176" y="80">agent</text><text class="t" x="312" y="188">replies &middot; staffing</text>""")
+
+CV["esg"] = S % ("Scattered document dots on the left resolve into a ranked bar chart on the right", """
+ <g class="pf" opacity=".85">
+  <circle cx="44" cy="62" r="3.4"/><circle cx="72" cy="48" r="3.4"/><circle cx="58" cy="96" r="3.4"/>
+  <circle cx="92" cy="80" r="3.4"/><circle cx="38" cy="122" r="3.4"/><circle cx="80" cy="130" r="3.4"/>
+  <circle cx="110" cy="58" r="3.4"/><circle cx="104" cy="110" r="3.4"/><circle cx="62" cy="158" r="3.4"/>
+  <circle cx="98" cy="164" r="3.4"/><circle cx="128" cy="90" r="3.4"/><circle cx="126" cy="140" r="3.4"/></g>
+ <path class="d" d="M148 108 H 186" stroke-dasharray="3 3"/><path class="d" d="M180 102 l 8 6 l -8 6"/>
+ <rect class="df" x="204" y="56" width="132" height="13" rx="2"/>
+ <rect class="df" x="204" y="80" width="106" height="13" rx="2" opacity=".78"/>
+ <rect class="df" x="204" y="104" width="84" height="13" rx="2" opacity=".6"/>
+ <rect class="df" x="204" y="128" width="58" height="13" rx="2" opacity=".44"/>
+ <rect class="df" x="204" y="152" width="34" height="13" rx="2" opacity=".3"/>
+ <text class="t" x="34" y="34">unstructured text</text><text class="t" x="204" y="34">company-date signal</text>
+ <text class="t" x="204" y="188">validated on forward returns</text>""")
+
+CV["covid"] = S % ("A sentiment time series with event markers above it and country dots below", """
+ <path class="p" d="M30 118 C 62 86 76 140 104 108 C 132 78 148 132 176 104 C 206 74 220 128 250 100 C 280 74 296 124 326 96 C 346 78 358 96 370 88"/>
+ <line class="hair" x1="30" y1="118" x2="370" y2="118" stroke-dasharray="3 3"/>
+ <g class="df"><rect x="104" y="46" width="2" height="18"/><rect x="176" y="46" width="2" height="18"/>
+  <rect x="250" y="46" width="2" height="18"/><rect x="326" y="46" width="2" height="18"/>
+  <circle cx="105" cy="44" r="3"/><circle cx="177" cy="44" r="3"/><circle cx="251" cy="44" r="3"/><circle cx="327" cy="44" r="3"/></g>
+ <g class="df" opacity=".5">
+  <circle cx="44" cy="176" r="2.6"/><circle cx="66" cy="184" r="2.6"/><circle cx="88" cy="172" r="2.6"/>
+  <circle cx="112" cy="182" r="2.6"/><circle cx="136" cy="174" r="2.6"/><circle cx="160" cy="186" r="2.6"/>
+  <circle cx="184" cy="174" r="2.6"/><circle cx="208" cy="182" r="2.6"/><circle cx="232" cy="176" r="2.6"/>
+  <circle cx="256" cy="186" r="2.6"/><circle cx="280" cy="174" r="2.6"/><circle cx="304" cy="182" r="2.6"/>
+  <circle cx="328" cy="176" r="2.6"/><circle cx="352" cy="184" r="2.6"/></g>
+ <text class="t" x="30" y="34">global events</text><text class="t" x="30" y="206">30 countries</text>""")
+
+CV["ranking"] = S % ("An unordered candidate list on the left is reranked into a relevance-ordered list", """
+ <rect class="d" x="32" y="52" width="118" height="15" rx="2" opacity=".5"/>
+ <rect class="d" x="32" y="76" width="118" height="15" rx="2"/>
+ <rect class="d" x="32" y="100" width="118" height="15" rx="2" opacity=".5"/>
+ <rect class="d" x="32" y="124" width="118" height="15" rx="2" opacity=".5"/>
+ <rect class="d" x="32" y="148" width="118" height="15" rx="2"/>
+ <path class="p" d="M150 83 C 190 83 190 59 248 59" stroke-dasharray="3 3"/>
+ <path class="p" d="M150 155 C 190 155 190 83 248 83" stroke-dasharray="3 3"/>
+ <path class="p" d="M150 59 C 190 59 190 107 248 107" stroke-dasharray="3 3" opacity=".45"/>
+ <rect class="df" x="248" y="52" width="118" height="15" rx="2"/>
+ <rect class="df" x="248" y="76" width="118" height="15" rx="2" opacity=".82"/>
+ <rect class="df" x="248" y="100" width="118" height="15" rx="2" opacity=".5"/>
+ <rect class="df" x="248" y="124" width="118" height="15" rx="2" opacity=".3"/>
+ <rect class="df" x="248" y="148" width="118" height="15" rx="2" opacity=".18"/>
+ <text class="t" x="32" y="40">candidates</text><text class="t" x="248" y="40">reranked</text>
+ <text class="t" x="248" y="188">NDCG optimised</text>""")
+
+CV["pmi"] = S % ("A Monte Carlo outcome distribution sitting almost entirely below a break-even line", """
+ <line class="hair" x1="196" y1="40" x2="196" y2="176"/>
+ <text class="t" x="204" y="36">break even</text>
+ <g class="pf" opacity=".9">
+  <rect x="40" y="150" width="15" height="26"/><rect x="58" y="136" width="15" height="40"/>
+  <rect x="76" y="116" width="15" height="60"/><rect x="94" y="96" width="15" height="80"/>
+  <rect x="112" y="84" width="15" height="92"/><rect x="130" y="90" width="15" height="86"/>
+  <rect x="148" y="106" width="15" height="70"/><rect x="166" y="126" width="15" height="50"/></g>
+ <g class="df" opacity=".38">
+  <rect x="200" y="146" width="15" height="30"/><rect x="218" y="158" width="15" height="18"/>
+  <rect x="236" y="166" width="15" height="10"/><rect x="254" y="171" width="15" height="5"/></g>
+ <line class="d" x1="30" y1="176" x2="370" y2="176"/>
+ <text class="t" x="40" y="204">simulated unit economics &mdash; the mass sits on the wrong side</text>""")
+
+CV["stock"] = S % ("A price line above and a sentiment band below, feeding a forecast segment", """
+ <path class="d" d="M30 92 L 62 78 L 94 96 L 126 70 L 158 84 L 190 58 L 222 72 L 254 50"/>
+ <path class="d" d="M254 50 L 286 62 L 318 44 L 350 56" stroke-dasharray="4 3" opacity=".6"/>
+ <circle class="df" cx="254" cy="50" r="3.5"/>
+ <line class="hair" x1="254" y1="36" x2="254" y2="182"/>
+ <text class="t" x="262" y="34">forecast</text>
+ <g class="pf" opacity=".75">
+  <rect x="30" y="140" width="26" height="16"/><rect x="62" y="132" width="26" height="24"/>
+  <rect x="94" y="146" width="26" height="10"/><rect x="126" y="128" width="26" height="28"/>
+  <rect x="158" y="138" width="26" height="18"/><rect x="190" y="124" width="26" height="32"/>
+  <rect x="222" y="134" width="26" height="22"/></g>
+ <line class="d" x1="30" y1="156" x2="370" y2="156"/>
+ <text class="t" x="30" y="182">sentiment from news and social text</text>
+ <text class="t" x="30" y="34">price</text>""")
+
+CV["usst"] = S % ("Wearable sensor traces on the left feeding an evacuation time estimate on the right", """
+ <path class="p" d="M30 60 q 12 -14 24 0 t 24 0 t 24 0 t 24 0 t 24 0"/>
+ <path class="p" d="M30 96 q 10 -18 20 0 t 20 0 t 20 0 t 20 0 t 20 0 t 20 0" opacity=".75"/>
+ <path class="p" d="M30 132 q 16 -10 32 0 t 32 0 t 32 0 t 32 0" opacity=".55"/>
+ <text class="t" x="30" y="40">gait &middot; heart rate</text>
+ <path class="d" d="M190 96 H 226" stroke-dasharray="3 3"/><path class="d" d="M220 90 l 8 6 l -8 6"/>
+ <g class="d"><rect x="244" y="52" width="112" height="92" rx="3"/>
+  <line x1="244" y1="82" x2="356" y2="82"/><line x1="244" y1="112" x2="356" y2="112"/></g>
+ <path class="df" d="M336 66 l 8 6 l -8 6 z"/><path class="df" d="M336 96 l 8 6 l -8 6 z"/>
+ <path class="df" d="M336 126 l 8 6 l -8 6 z"/>
+ <text class="t" x="244" y="40">floor-by-floor egress</text>
+ <text class="t" x="244" y="176">evacuation-time estimate</text>""")
+
+GROUPS = [
+ ("Applied AI systems",
+  "Things a person who did not build them has to use.", [
+  card("projects/hef.html","Naturalness.ai &middot; live in production","HEF Funding Navigator",
+    "A loan-navigation assistant for a Treasury-certified CDFI. The model classifies and writes prose; every number is computed in code, because a model that adds up five factors is wrong quietly.",
+    "7 days to launch &middot; 98% scenario pass", CV["hef"]),
+  card("projects/agent.html","Side project &middot; n8n + GPT API","Operations agent for local businesses",
+    "Salons and restaurants drown in reviews and email. This reads reviews, inbox and bookings together, drafts replies, and turns the traffic pattern into a staffing suggestion.",
+    "Appointment-driven SMBs", CV["agent"]),
+ ]),
+ ("NLP, retrieval and signals",
+  "Getting structure out of text, then checking the structure is worth anything.", [
+  card("projects/esg.html","Global AI &middot; Data Scientist","ESG signals from news and filings",
+    "Classifying ESG events out of multilingual text, then turning them into company-level signals &mdash; and checking with information coefficient whether they carried anything the market did not already have.",
+    "Macro F1 +15% &middot; throughput +20%", CV["esg"]),
+  card("projects/covid.html","Research project &middot; 1M+ tweets","Sentiment and events across 30 countries",
+    "A million COVID-era tweets through Twitter-RoBERTa, then time-series decomposition and VAR to ask whether public mood followed events or ran ahead of them.",
+    "30 countries &middot; multilingual", CV["covid"]),
+  card("projects/ranking.html","Research project &middot; learning to rank","Retrieval and ranking for literature",
+    "Topic modelling and cosine similarity fetch candidates, LambdaMART reranks them. The point of the metric: a reviewer reads far fewer papers to find the same 95% of the relevant ones.",
+    "15% WSS@95 over baseline", CV["ranking"]),
+ ]),
+ ("Forecasting and decision modelling",
+  "Where the output is a number someone then has to bet on.", [
+  card("projects/pmi.html","PMI Foods &middot; Data Intern","The expansion that did not happen",
+    "Demand forecasting, logistics risk and a Monte Carlo over unit economics, built to answer one go or no-go question. The simulation said the scale-up would not pay back.",
+    "~$10M loss avoided", CV["pmi"]),
+  card("projects/stock.html","Research project &middot; LSTM + sentiment","Price forecasting with sentiment features",
+    "LSTM time-series combined with multivariate regression over technical indicators, volatility and sentiment pulled from financial news. Most of the work was regularisation, not architecture.",
+    "R&sup2; 0.708 &rarr; 0.746", CV["stock"]),
+  card("projects/usst.html","USST &middot; Research assistant","Evacuation modelling for high-rise buildings",
+    "Wearable sensor data from evacuation trials &mdash; gait dynamics, cardiovascular response &mdash; cleaned into features, then used to estimate how long a building actually takes to empty.",
+    "Multimodal sensor pipeline", CV["usst"]),
+ ]),
+]
+
+blocks = []
+for name, sub, cards in GROUPS:
+    blocks.append(f'''  <div class="cat">
+    <div class="cathead"><h3>{name}</h3><p>{sub}</p></div>
+    <div class="grid">
+{chr(10).join(cards)}
+    </div>
+  </div>''')
+
+new_work = '''<section id="work"><div class="wide">
+  <div class="sk">Selected work</div>
+  <h2 style="max-width:18ch">Everything I have built, grouped by what it is</h2>
+''' + "\n".join(blocks) + '''
+</div></section>'''
+
+s = io.open(IDX, encoding="utf-8").read()
+start = s.index('<section id="work">')
+end   = s.index('</section>', s.index('</div></section>', start)) + len('</section>')
+s = s[:start] + new_work + s[end:]
+io.open(IDX, "w", encoding="utf-8").write(s)
+print("work section rewritten: %d cards in %d categories" % (sum(len(g[2]) for g in GROUPS), len(GROUPS)))
