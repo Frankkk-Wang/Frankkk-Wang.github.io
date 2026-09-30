@@ -9,7 +9,7 @@ HEAD = """<!doctype html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>{title} — Frank Wang</title>
+<title>{title} | Frank Wang</title>
 <meta name="description" content="{desc}">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -131,10 +131,10 @@ PAGES = {
 
   <h2>The decision the whole thing rests on</h2>
   <p>A language model asked to total five weighted factors and compare them against two thresholds gets it right most of the time, and <b>wrong quietly</b> the rest. Someone is told they are in the wrong tier, nobody notices, and the only trace is one bad conversation.</p>
-  <p>So the model classifies intent, pulls entities out of free text, and writes the prose. <b>Every number is computed in code.</b> Scoring, tier selection, product matching, permit-checklist assembly, PII redaction &mdash; none of it goes near the model.</p>
+  <p>So the model classifies intent, pulls entities out of free text, and writes the prose. <b>Every number is computed in code.</b> Scoring, tier selection, product matching, permit-checklist assembly, PII redaction. None of it goes near the model.</p>
   <div class="legend">
-    <i class="d">deterministic &mdash; code decides</i>
-    <i class="p">probabilistic &mdash; the model decides</i>
+    <i class="d">deterministic: code decides</i>
+    <i class="p">probabilistic: the model decides</i>
   </div>
 </div>
 """ + PIPELINE_SVG + """
@@ -154,7 +154,7 @@ PAGES = {
     <li>PII redacted in both directions before storage, with tiered retention on what remains</li>
     <li>A second client assistant for a student-housing operator, built and delivered on the same stack</li>
   </ul>
-  <div class="stack"><b>Stack</b> &mdash; Python &middot; DeepSeek behind a swappable provider layer &middot; no vector store &middot; pytest</div>
+  <div class="stack"><b>Stack</b>: Python &middot; DeepSeek behind a swappable provider layer &middot; no vector store &middot; pytest</div>
 </div></section>
 """),
 
@@ -174,21 +174,21 @@ PAGES = {
 
   <h2>Classifying the events</h2>
   <p>I benchmarked gradient boosting, embedding-based neural models and ensembles against a TF-IDF baseline, adding source type, industry and event-history features on top of the text.</p>
-  <p>The metric choice mattered more than the model choice. The label set is badly imbalanced &mdash; a handful of ESG event types dominate &mdash; and accuracy would have let the frequent categories hide everything else. I used <b>Macro F1</b>, which averages per class before averaging across them. It went up roughly <b>15%</b> over the production baseline, and the gains sat in the low-frequency categories, which is where they were worth having.</p>
+  <p>The metric choice mattered more than the model choice. The label set is badly imbalanced, with a handful of ESG event types dominating, and accuracy would have let the frequent categories hide everything else. I used <b>Macro F1</b>, which averages per class before averaging across them. It went up roughly <b>15%</b> over the production baseline, and the gains sat in the low-frequency categories, which is where they were worth having.</p>
   <p>Error analysis is what drove the next round: articles naming several companies, events at a subsidiary that belong to the parent, articles that mention an ESG topic without an event having happened, and categories that genuinely overlap. Those findings went back into the preprocessing rules rather than into a bigger model.</p>
 
   <h2>Making the signals mean something</h2>
-  <p>A classified article is not yet a signal. One event reported by ten outlets is still one event, so near-duplicate coverage gets clustered before anything is counted &mdash; otherwise a syndicated story inflates a company tenfold.</p>
+  <p>A classified article is not yet a signal. One event reported by ten outlets is still one event, so near-duplicate coverage gets clustered before anything is counted. Otherwise a syndicated story inflates a company tenfold.</p>
   <p>Then exposure has to be normalised away. A company with hundreds of articles a day and one with almost none cannot be compared raw: five negative stories is noise for the first and a strong signal for the second. Each signal is normalised against the company's own media history and against its industry.</p>
 
   <div class="aside">
-    The question was never whether ESG events move prices. It was whether the signal carried <b>information that was not already there</b>. That is why validation used cross-sectional information coefficient against forward returns and realized volatility, controlling for industry and market cap &mdash; and why the results were reported as evidence rather than as a causal claim.
+    The question was never whether ESG events move prices. It was whether the signal carried <b>information that was not already there</b>. That is why validation used cross-sectional information coefficient against forward returns and realized volatility, controlling for industry and market cap, and why the results were reported as evidence rather than as a causal claim.
   </div>
 
   <h2>Cost, not just accuracy</h2>
   <p>Embedding generation and duplicate detection were the expensive steps. Batching embedding generation, caching document embeddings, skipping documents that had not changed and vectorizing preprocessing raised throughput about <b>20%</b> on a fixed benchmark.</p>
   <p>I also compared machine translation into English against multilingual sentence embeddings on the original text. For the high-volume languages the embeddings held enough meaning to classify directly, which let translation be dropped for everything except low-confidence cases that a human would review anyway.</p>
-  <div class="stack"><b>Stack</b> &mdash; Python &middot; sentence embeddings &middot; gradient boosting &middot; PyTorch &middot; pandas</div>
+  <div class="stack"><b>Stack</b>: Python &middot; sentence embeddings &middot; gradient boosting &middot; PyTorch &middot; pandas</div>
 </div></section>
 """),
 
@@ -203,14 +203,14 @@ PAGES = {
   <h2>What it does</h2>
   <ul class="clean">
     <li>Watches Google reviews and drafts a reply in the owner's voice, with the tone set by the rating rather than by a single template</li>
-    <li>Handles routine customer email &mdash; hours, availability, pricing questions &mdash; with the context of what is actually on the calendar</li>
+    <li>Handles routine customer email (hours, availability, pricing questions) with the context of what is actually on the calendar</li>
     <li>Reads review, email and booking signals together to find the demand pattern, then suggests when to add or cut a shift</li>
   </ul>
 
   <h2>Why the three streams have to be read together</h2>
   <p>Any one of them on its own is misleading. Reviews tell you how last week felt but not how busy it was. Bookings tell you volume but not why Thursday collapsed. Email is where the cancellations and the special requests hide. The useful signal only appears when they are lined up on the same timeline.</p>
   <p>This is the same problem as the lending assistant in a smaller form: the model is good at reading unstructured text and terrible at being trusted with the arithmetic. It drafts and classifies; the scheduling suggestion comes from counting.</p>
-  <div class="stack"><b>Stack</b> &mdash; n8n &middot; GPT API &middot; Google Business Profile &middot; scheduled workflows</div>
+  <div class="stack"><b>Stack</b>: n8n &middot; GPT API &middot; Google Business Profile &middot; scheduled workflows</div>
 </div></section>
 """),
 
@@ -238,7 +238,7 @@ PAGES = {
   <div class="aside">
     Choosing the metric was most of the work. The same model looks unremarkable under accuracy and clearly useful under WSS@95, because only one of those two is measuring the thing the user actually pays for.
   </div>
-  <div class="stack"><b>Stack</b> &mdash; Python &middot; LDA &middot; TF-IDF &middot; LambdaMART &middot; linear SVM with SGD</div>
+  <div class="stack"><b>Stack</b>: Python &middot; LDA &middot; TF-IDF &middot; LambdaMART &middot; linear SVM with SGD</div>
 </div></section>
 """),
 
@@ -269,7 +269,7 @@ PAGES = {
   </div>
 
   <p>Unsupervised clustering grouped countries by response shape rather than by geography, LSTM models in PyTorch tested short-horizon forecastability, and the results went into interactive dashboards so the country-by-country differences could be read directly instead of through a summary statistic.</p>
-  <div class="stack"><b>Stack</b> &mdash; Python &middot; Twitter-RoBERTa &middot; PyTorch &middot; statsmodels VAR &middot; pandas</div>
+  <div class="stack"><b>Stack</b>: Python &middot; Twitter-RoBERTa &middot; PyTorch &middot; statsmodels VAR &middot; pandas</div>
 </div></section>
 """),
 
@@ -278,7 +278,7 @@ PAGES = {
   desc="Demand forecasting, logistics risk and a Monte Carlo over unit economics, built to answer one go or no-go question.",
   tag="PMI Foods &middot; Data Intern &middot; 2024",
   h1="The expansion that did not happen",
-  lede="A scale-up was on the table. I built the model that answered whether it would pay back, and the answer was <b>no</b> &mdash; which is the outcome that saved roughly <b>$10M</b>.",
+  lede="A scale-up was on the table. I built the model that answered whether it would pay back, and the answer was <b>no</b>, which is the outcome that saved roughly <b>$10M</b>.",
   body="""
 <section><div class="col">
   <h2>Three models, one decision</h2>
@@ -290,16 +290,16 @@ PAGES = {
 
   <h2>Why simulation rather than a spreadsheet</h2>
   <p>A single-point forecast answers the wrong question. Leadership was not asking what the most likely outcome was; they were asking whether it was safe to commit. Those need different objects: one needs an estimate, the other needs a distribution.</p>
-  <p>The Monte Carlo put almost the entire outcome distribution on the wrong side of break-even. Not marginal, not sensitive to one assumption &mdash; the mass was simply in the wrong place. That is a far easier result to act on than a point estimate that happens to be slightly negative, because it survives an argument about any individual input.</p>
+  <p>The Monte Carlo put almost the entire outcome distribution on the wrong side of break-even. Not marginal, not sensitive to one assumption. The mass was simply in the wrong place. That is a far easier result to act on than a point estimate that happens to be slightly negative, because it survives an argument about any individual input.</p>
 
   <div class="aside">
     The deliverable was a recommendation not to proceed. It is the piece of analysis I am most sure was correct, and the only way anyone would ever have found out it was wrong is if they had ignored it.
   </div>
 
   <h2>The unglamorous half</h2>
-  <p>None of the above runs without the data being trustworthy. I worked on the databases underneath it: supporting warehouse and ETL design, tightening access control and data quality, and rewriting queries and indexes to get processing about <b>30% faster</b> &mdash; which matters when a simulation has to be re-run every time an assumption is challenged.</p>
+  <p>None of the above runs without the data being trustworthy. I worked on the databases underneath it: supporting warehouse and ETL design, tightening access control and data quality, and rewriting queries and indexes to get processing about <b>30% faster</b>, which matters when a simulation has to be re-run every time an assumption is challenged.</p>
   <p>I also built the Power BI and Tableau dashboards that tracked operational and financial KPIs day to day, which is where the disagreements about metric definitions surfaced and got settled.</p>
-  <div class="stack"><b>Stack</b> &mdash; Python &middot; Monte Carlo simulation &middot; SQL &middot; ETL &middot; Power BI &middot; Tableau</div>
+  <div class="stack"><b>Stack</b>: Python &middot; Monte Carlo simulation &middot; SQL &middot; ETL &middot; Power BI &middot; Tableau</div>
 </div></section>
 """),
 
@@ -322,12 +322,12 @@ PAGES = {
 
   <h2>Where the actual work went</h2>
   <p>Not the architecture. Financial series are short, noisy and non-stationary, which means a model can fit beautifully and generalise not at all, and the failure mode looks exactly like success on the training curve.</p>
-  <p>So most of the effort was the discipline around it: dropout, <b>K-fold cross-validation</b>, hyperparameter tuning and learning-rate scheduling. R&sup2; moving from 0.708 to 0.746 across multiple market conditions is a modest gain, and the modesty is the honest part &mdash; a much larger number on this kind of data would mostly be evidence of a leak.</p>
+  <p>So most of the effort was the discipline around it: dropout, <b>K-fold cross-validation</b>, hyperparameter tuning and learning-rate scheduling. R&sup2; moving from 0.708 to 0.746 across multiple market conditions is a modest gain, and the modesty is the honest part. A much larger number on this kind of data would mostly be evidence of a leak.</p>
 
   <div class="aside">
     This is a research exercise, not a trading system. It tests whether sentiment features add incremental information to a price model. It does not survive transaction costs, and it was never asked to.
   </div>
-  <div class="stack"><b>Stack</b> &mdash; Python &middot; PyTorch &middot; LSTM &middot; scikit-learn &middot; news and social sentiment features</div>
+  <div class="stack"><b>Stack</b>: Python &middot; PyTorch &middot; LSTM &middot; scikit-learn &middot; news and social sentiment features</div>
 </div></section>
 """),
 
@@ -340,16 +340,16 @@ PAGES = {
   body="""
 <section><div class="col">
   <h2>Sensor data is not tidy data</h2>
-  <p>Physiological recordings from people moving are full of motion artefacts, dropouts and drift. Before anything can be modelled, the signal has to be made trustworthy: noise filtering, anomaly detection for the stretches where a sensor lost contact, and feature engineering to pull out the things that actually describe how someone is descending &mdash; stride cadence, pace decay, heart-rate response to sustained exertion.</p>
+  <p>Physiological recordings from people moving are full of motion artefacts, dropouts and drift. Before anything can be modelled, the signal has to be made trustworthy: noise filtering, anomaly detection for the stretches where a sensor lost contact, and feature engineering to pull out the things that actually describe how someone is descending: stride cadence, pace decay, heart-rate response to sustained exertion.</p>
   <p>The cardiovascular side matters more than it first appears. Evacuation time is not set by how fast people can walk down stairs; it is set by how fast they can <b>keep</b> walking down stairs, which is a fatigue question, and fatigue shows up in heart rate long before it shows up in speed.</p>
 
   <h2>From individuals to a building</h2>
-  <p>Exploratory analysis across Python, MATLAB and SPSS looked for the behavioural and physiological patterns that repeated across trials, and those fed preliminary evacuation-time forecasting models. The purpose was parameterisation: the models exist so that control strategies &mdash; staging floors, timing releases &mdash; can be evaluated without running another live trial every time.</p>
+  <p>Exploratory analysis across Python, MATLAB and SPSS looked for the behavioural and physiological patterns that repeated across trials, and those fed preliminary evacuation-time forecasting models. The purpose was parameterisation: the models exist so that control strategies, such as staging floors and timing releases, can be evaluated without running another live trial every time.</p>
 
   <div class="aside">
     First time I worked on something where the data collection was the hard part and the modelling was comparatively easy. It is also where I learned how much of a result is decided before anyone opens a notebook.
   </div>
-  <div class="stack"><b>Stack</b> &mdash; Python &middot; MATLAB &middot; SPSS &middot; wearable sensor preprocessing &middot; time-series features</div>
+  <div class="stack"><b>Stack</b>: Python &middot; MATLAB &middot; SPSS &middot; wearable sensor preprocessing &middot; time-series features</div>
 </div></section>
 """),
 }

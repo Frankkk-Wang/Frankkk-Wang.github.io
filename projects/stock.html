@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Price forecasting with sentiment features — Frank Wang</title>
+<title>Price forecasting with sentiment features | Frank Wang</title>
 <meta name="description" content="LSTM time-series combined with multivariate regression over technical indicators, volatility and news sentiment.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -41,12 +41,12 @@
 
   <h2>Where the actual work went</h2>
   <p>Not the architecture. Financial series are short, noisy and non-stationary, which means a model can fit beautifully and generalise not at all, and the failure mode looks exactly like success on the training curve.</p>
-  <p>So most of the effort was the discipline around it: dropout, <b>K-fold cross-validation</b>, hyperparameter tuning and learning-rate scheduling. R&sup2; moving from 0.708 to 0.746 across multiple market conditions is a modest gain, and the modesty is the honest part &mdash; a much larger number on this kind of data would mostly be evidence of a leak.</p>
+  <p>So most of the effort was the discipline around it: dropout, <b>K-fold cross-validation</b>, hyperparameter tuning and learning-rate scheduling. R&sup2; moving from 0.708 to 0.746 across multiple market conditions is a modest gain, and the modesty is the honest part. A much larger number on this kind of data would mostly be evidence of a leak.</p>
 
   <div class="aside">
     This is a research exercise, not a trading system. It tests whether sentiment features add incremental information to a price model. It does not survive transaction costs, and it was never asked to.
   </div>
-  <div class="stack"><b>Stack</b> &mdash; Python &middot; PyTorch &middot; LSTM &middot; scikit-learn &middot; news and social sentiment features</div>
+  <div class="stack"><b>Stack</b>: Python &middot; PyTorch &middot; LSTM &middot; scikit-learn &middot; news and social sentiment features</div>
 </div></section>
 
 <section><div class="col">

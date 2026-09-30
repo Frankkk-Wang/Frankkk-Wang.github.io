@@ -99,7 +99,7 @@ CV["pmi"] = S % ("A Monte Carlo outcome distribution sitting almost entirely bel
   <rect x="200" y="146" width="15" height="30"/><rect x="218" y="158" width="15" height="18"/>
   <rect x="236" y="166" width="15" height="10"/><rect x="254" y="171" width="15" height="5"/></g>
  <line class="d" x1="30" y1="176" x2="370" y2="176"/>
- <text class="t" x="40" y="204">simulated unit economics &mdash; the mass sits on the wrong side</text>""")
+ <text class="t" x="40" y="204">simulated unit economics: the mass sits on the wrong side</text>""")
 
 CV["stock"] = S % ("A price line above and a sentiment band below, feeding a forecast segment", """
  <path class="d" d="M30 92 L 62 78 L 94 96 L 126 70 L 158 84 L 190 58 L 222 72 L 254 50"/>
@@ -142,7 +142,7 @@ GROUPS = [
  ("NLP, retrieval and signals",
   "Getting structure out of text, then checking the structure is worth anything.", [
   card("projects/esg.html","Global AI &middot; Data Scientist","ESG signals from news and filings",
-    "Classifying ESG events out of multilingual text, then turning them into company-level signals &mdash; and checking with information coefficient whether they carried anything the market did not already have.",
+    "Classifying ESG events out of multilingual text, then turning them into company-level signals, then checking with information coefficient whether they carried anything the market did not already have.",
     "Macro F1 +15% &middot; throughput +20%", CV["esg"]),
   card("projects/covid.html","Research project &middot; 1M+ tweets","Sentiment and events across 30 countries",
     "A million COVID-era tweets through Twitter-RoBERTa, then time-series decomposition and VAR to ask whether public mood followed events or ran ahead of them.",
@@ -160,7 +160,7 @@ GROUPS = [
     "LSTM time-series combined with multivariate regression over technical indicators, volatility and sentiment pulled from financial news. Most of the work was regularisation, not architecture.",
     "R&sup2; 0.708 &rarr; 0.746", CV["stock"]),
   card("projects/usst.html","USST &middot; Research assistant","Evacuation modelling for high-rise buildings",
-    "Wearable sensor data from evacuation trials &mdash; gait dynamics, cardiovascular response &mdash; cleaned into features, then used to estimate how long a building actually takes to empty.",
+    "Wearable sensor data from evacuation trials (gait dynamics, cardiovascular response) cleaned into features, then used to estimate how long a building actually takes to empty.",
     "Multimodal sensor pipeline", CV["usst"]),
  ]),
 ]

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>ESG signals from news and filings — Frank Wang</title>
+<title>ESG signals from news and filings | Frank Wang</title>
 <meta name="description" content="Classifying ESG events out of multilingual text and turning them into company-level signals validated against market outcomes.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -38,21 +38,21 @@
 
   <h2>Classifying the events</h2>
   <p>I benchmarked gradient boosting, embedding-based neural models and ensembles against a TF-IDF baseline, adding source type, industry and event-history features on top of the text.</p>
-  <p>The metric choice mattered more than the model choice. The label set is badly imbalanced &mdash; a handful of ESG event types dominate &mdash; and accuracy would have let the frequent categories hide everything else. I used <b>Macro F1</b>, which averages per class before averaging across them. It went up roughly <b>15%</b> over the production baseline, and the gains sat in the low-frequency categories, which is where they were worth having.</p>
+  <p>The metric choice mattered more than the model choice. The label set is badly imbalanced, with a handful of ESG event types dominating, and accuracy would have let the frequent categories hide everything else. I used <b>Macro F1</b>, which averages per class before averaging across them. It went up roughly <b>15%</b> over the production baseline, and the gains sat in the low-frequency categories, which is where they were worth having.</p>
   <p>Error analysis is what drove the next round: articles naming several companies, events at a subsidiary that belong to the parent, articles that mention an ESG topic without an event having happened, and categories that genuinely overlap. Those findings went back into the preprocessing rules rather than into a bigger model.</p>
 
   <h2>Making the signals mean something</h2>
-  <p>A classified article is not yet a signal. One event reported by ten outlets is still one event, so near-duplicate coverage gets clustered before anything is counted &mdash; otherwise a syndicated story inflates a company tenfold.</p>
+  <p>A classified article is not yet a signal. One event reported by ten outlets is still one event, so near-duplicate coverage gets clustered before anything is counted. Otherwise a syndicated story inflates a company tenfold.</p>
   <p>Then exposure has to be normalised away. A company with hundreds of articles a day and one with almost none cannot be compared raw: five negative stories is noise for the first and a strong signal for the second. Each signal is normalised against the company's own media history and against its industry.</p>
 
   <div class="aside">
-    The question was never whether ESG events move prices. It was whether the signal carried <b>information that was not already there</b>. That is why validation used cross-sectional information coefficient against forward returns and realized volatility, controlling for industry and market cap &mdash; and why the results were reported as evidence rather than as a causal claim.
+    The question was never whether ESG events move prices. It was whether the signal carried <b>information that was not already there</b>. That is why validation used cross-sectional information coefficient against forward returns and realized volatility, controlling for industry and market cap, and why the results were reported as evidence rather than as a causal claim.
   </div>
 
   <h2>Cost, not just accuracy</h2>
   <p>Embedding generation and duplicate detection were the expensive steps. Batching embedding generation, caching document embeddings, skipping documents that had not changed and vectorizing preprocessing raised throughput about <b>20%</b> on a fixed benchmark.</p>
   <p>I also compared machine translation into English against multilingual sentence embeddings on the original text. For the high-volume languages the embeddings held enough meaning to classify directly, which let translation be dropped for everything except low-confidence cases that a human would review anyway.</p>
-  <div class="stack"><b>Stack</b> &mdash; Python &middot; sentence embeddings &middot; gradient boosting &middot; PyTorch &middot; pandas</div>
+  <div class="stack"><b>Stack</b>: Python &middot; sentence embeddings &middot; gradient boosting &middot; PyTorch &middot; pandas</div>
 </div></section>
 
 <section><div class="col">

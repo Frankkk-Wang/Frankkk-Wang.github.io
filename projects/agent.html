@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Operations agent for local businesses — Frank Wang</title>
+<title>Operations agent for local businesses | Frank Wang</title>
 <meta name="description" content="An n8n and GPT API agent that reads reviews, email and bookings together and turns them into replies and staffing suggestions.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -33,14 +33,14 @@
   <h2>What it does</h2>
   <ul class="clean">
     <li>Watches Google reviews and drafts a reply in the owner's voice, with the tone set by the rating rather than by a single template</li>
-    <li>Handles routine customer email &mdash; hours, availability, pricing questions &mdash; with the context of what is actually on the calendar</li>
+    <li>Handles routine customer email (hours, availability, pricing questions) with the context of what is actually on the calendar</li>
     <li>Reads review, email and booking signals together to find the demand pattern, then suggests when to add or cut a shift</li>
   </ul>
 
   <h2>Why the three streams have to be read together</h2>
   <p>Any one of them on its own is misleading. Reviews tell you how last week felt but not how busy it was. Bookings tell you volume but not why Thursday collapsed. Email is where the cancellations and the special requests hide. The useful signal only appears when they are lined up on the same timeline.</p>
   <p>This is the same problem as the lending assistant in a smaller form: the model is good at reading unstructured text and terrible at being trusted with the arithmetic. It drafts and classifies; the scheduling suggestion comes from counting.</p>
-  <div class="stack"><b>Stack</b> &mdash; n8n &middot; GPT API &middot; Google Business Profile &middot; scheduled workflows</div>
+  <div class="stack"><b>Stack</b>: n8n &middot; GPT API &middot; Google Business Profile &middot; scheduled workflows</div>
 </div></section>
 
 <section><div class="col">
